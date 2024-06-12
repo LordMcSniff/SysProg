@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// ########### CUSTOM ###########
+#include "../lib/process.h"
+
+static void print_queue(queue_object *queue)
+{
+	while (queue != NULL)
+	{
+		process *p = (process *)(queue->object);
+		char pid = (p != NULL) ? p->id : '0';
+		printf(" | %p, %p, %c |\n", queue, queue->object, pid);
+
+		queue = queue->next;
+	}
+}
+// ########### END CUSTOM ###########
+
 int queue_add(void *new_object, queue_object *queue)
 {
 	if (queue == NULL)
@@ -29,6 +45,7 @@ void *queue_poll(queue_object *queue)
 
 	void *item = second_last->next->object;
 	free(second_last->next);
+	second_last->next = NULL;
 	return item;
 }
 
