@@ -1,27 +1,36 @@
 #include "../lib/LCFS.h"
+#include "queue_extended.h"
 
 static queue_object *LCFS_queue;
 //You can add more global variables here
 
 int LCFS_startup()
 {
-	// TODO
+	LCFS_queue = new_queue();
+	if (LCFS_queue == NULL)
+		return 1;
 	return 0;
 }
 
 process *LCFS_tick(process *running_process)
 {
-	// TODO
-	return NULL;
+	if (running_process == NULL || running_process->time_left <= 0)
+		running_process = queue_pop(LCFS_queue);
+
+	if (running_process != NULL)
+		running_process->time_left--;
+
+	return running_process;
 }
 
 process *LCFS_new_arrival(process *arriving_process, process *running_process)
 {
-	// TODO
-	return NULL;
+	if (arriving_process != NULL)
+		queue_push(arriving_process, LCFS_queue);
+	return running_process;
 }
 
 void LCFS_finish()
 {
-	// TODO
+	free_queue(LCFS_queue);
 }
