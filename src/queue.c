@@ -23,10 +23,10 @@ int queue_add(void *new_object, queue_object *queue)
 	if (queue == NULL)
 		return 1;
 
-	queue_object *last = queue->next;
+	queue_object *tail = queue->next;
 
 	queue->next = calloc(1, sizeof(queue_object));
-	queue->next->next = last;
+	queue->next->next = tail;
 	queue->next->object = new_object;
 	return 0;
 }
@@ -73,4 +73,19 @@ void *queue_peek(queue_object *queue)
 		return NULL;
 
 	return queue->next->object;
+}
+
+void *queue_pop(queue_object *queue)
+{
+	if (queue == NULL)
+		return NULL;
+	if (queue->next == NULL)
+		return NULL;
+
+	queue_object *tail = queue->next->next;
+	void *item = queue->next->object;
+
+	free(queue->next);
+	queue->next = tail;
+	return item;
 }
