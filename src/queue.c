@@ -2,22 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// ########### CUSTOM ###########
-#include "../lib/process.h"
-
-static void print_queue(queue_object *queue)
-{
-	while (queue != NULL)
-	{
-		process *p = (process *)(queue->object);
-		char pid = (p != NULL) ? p->id : '0';
-		printf(" | %p, %p, %c |\n", queue, queue->object, pid);
-
-		queue = queue->next;
-	}
-}
-// ########### END CUSTOM ###########
-
 int queue_add(void *new_object, queue_object *queue)
 {
 	if (queue == NULL)
@@ -75,6 +59,28 @@ void *queue_peek(queue_object *queue)
 	return queue->next->object;
 }
 
+// ########### CUSTOM ###########
+#include "../lib/process.h"
+
+void print_queue(queue_object *queue)
+{
+	printf("\n >>> QUEUE: %p <<< \n", queue);
+
+	while (queue != NULL)
+	{
+		process *p = (process *)(queue->object);
+		char pid = (p != NULL) ? p->id : '0';
+		printf(" | %p, %p, %c |\n", queue, queue->object, pid);
+
+		queue = queue->next;
+	}
+	printf("\n");
+}
+int queue_push(void *new_object, queue_object *queue)
+{
+	queue_add(new_object, queue);
+}
+
 void *queue_pop(queue_object *queue)
 {
 	if (queue == NULL)
@@ -89,3 +95,5 @@ void *queue_pop(queue_object *queue)
 	queue->next = tail;
 	return item;
 }
+
+// ########### END CUSTOM ###########
