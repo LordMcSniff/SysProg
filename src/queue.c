@@ -103,6 +103,9 @@ int queue_insert_priority(void *new_object, queue_object *queue)
 	if (queue == NULL)
 		return 1;
 
+	if (new_object == NULL)
+		return 1;
+
 	queue_object *second_last = queue;
 
 	while (second_last->next != NULL && ((process *)(second_last->next->object))->priority >= ((process *)new_object)->priority)

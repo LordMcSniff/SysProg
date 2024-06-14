@@ -54,7 +54,7 @@ BASH_COLOR_GREEN = \033[32m
 .PHONY: $(TEST_TARGET)   # Run a specific test
 $(TEST_TARGET): %: $(BUILD_DIR)/tests/%
 	@echo ">>> Running $<"
-	@./$< && echo -e "<<< $(BASH_COLOR_GREEN)OK$(BASH_COLOR_NONE)" \
+	@./$< 1>/dev/null && echo -e "<<< $(BASH_COLOR_GREEN)OK$(BASH_COLOR_NONE)" \
 		|| echo -e "<<< $(BASH_COLOR_RED)FAILED$(BASH_COLOR_NONE)"
 
 

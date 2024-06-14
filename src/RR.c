@@ -2,7 +2,7 @@
 
 static queue_object *RR_queue;
 static int RR_quantum = 0;
-static short int remaining = 0;
+static unsigned int remaining = 0;
 
 process *RR_tick(process *running_process)
 {
