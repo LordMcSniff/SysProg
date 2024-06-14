@@ -16,5 +16,10 @@ int queue_push(void *new_object, queue_object *queue);
 
 void *queue_pop(queue_object *queue);
 
+int queue_insert_priority(void *new_object, queue_object *queue);
+int queue_insert_remaining_time(void *new_object, queue_object *queue);
+
+void *queue_pop_highest_response_ratio(queue_object *queue, int tick);
+
 #endif // QUEUE_EXTENDED_H
 #endif // QUEUE_H

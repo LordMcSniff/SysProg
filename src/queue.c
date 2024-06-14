@@ -61,6 +61,7 @@ void *queue_peek(queue_object *queue)
 
 // ########### CUSTOM ###########
 #include "../lib/process.h"
+#include "queue_extended.h"
 
 void print_queue(queue_object *queue)
 {
@@ -76,9 +77,10 @@ void print_queue(queue_object *queue)
 	}
 	printf("\n");
 }
+
 int queue_push(void *new_object, queue_object *queue)
 {
-	queue_add(new_object, queue);
+	return queue_add(new_object, queue);
 }
 
 void *queue_pop(queue_object *queue)
@@ -94,6 +96,64 @@ void *queue_pop(queue_object *queue)
 	free(queue->next);
 	queue->next = tail;
 	return item;
+}
+
+int queue_insert_priority(void *new_object, queue_object *queue)
+{
+	if (queue == NULL)
+		return 1;
+
+	queue_object *second_last = queue;
+
+	while (second_last->next != NULL && ((process *)(second_last->next->object))->priority >= ((process *)new_object)->priority)
+		second_last = second_last->next;
+
+	return queue_add(new_object, second_last);
+}
+
+int queue_insert_remaining_time(void *new_object, queue_object *queue)
+{
+	if (queue == NULL)
+		return 1;
+
+	queue_object *second_last = queue;
+
+	while (second_last->next != NULL && ((process *)(second_last->next->object))->time_left <= ((process *)new_object)->time_left)
+		second_last = second_last->next;
+
+	return queue_add(new_object, second_last);
+}
+unsigned int calc_response_ratio(void *object, unsigned int tick)
+{
+	process *p = (process *)object;
+	if (p == NULL)
+		return -1;
+
+	return (tick - p->start_time) / p->time_left;
+}
+
+void *queue_pop_highest_response_ratio(queue_object *queue, int tick)
+{
+	if (queue == NULL)
+		return NULL;
+
+	queue_object *q = queue;
+	unsigned int tracking_rr = -1;
+
+	while (queue->next != NULL)
+	{
+		unsigned int current_rr = calc_response_ratio(queue->next->object, tick);
+		if (current_rr > tracking_rr)
+		{
+			// save queue link of the tracking highest rr
+			q = queue;
+			tracking_rr = current_rr;
+		}
+
+		queue = queue->next;
+	}
+
+	return queue_poll(q);
 }
 
 // ########### END CUSTOM ###########
